@@ -53,7 +53,15 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
           RAILWAY_ENVIRONMENT_ID: ${{ vars.RAILWAY_ENVIRONMENT_ID }}
-        run: railway up --ci --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_ENVIRONMENT_ID"
+          RAILWAY_SERVICE_ID: ${{ vars.RAILWAY_SERVICE_ID }}
+        run: |
+          test -n "$RAILWAY_PROJECT_ID"
+          test -n "$RAILWAY_ENVIRONMENT_ID"
+          test -n "$RAILWAY_SERVICE_ID"
+          railway up --ci \
+            --project "$RAILWAY_PROJECT_ID" \
+            --environment "$RAILWAY_ENVIRONMENT_ID" \
+            --service "$RAILWAY_SERVICE_ID"
       - name: Smoke test
         env:
           PUBLIC_URL: ${{ vars.PUBLIC_URL }}
