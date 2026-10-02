@@ -73,9 +73,14 @@ done; echo
 Dán output của các lệnh trên vào đây:
 
 ```
-Chưa thể xác minh output từ workspace: DNS hiện trả về `Could not resolve host`
-cho public hostname. Chạy lại các lệnh trên từ mạng có thể truy cập Railway và
-dán output thực tế vào đây.
+/health  → HTTP/2 200
+           {"status":"ok","service":"day12-agent","version":"1.0.0"}
+
+/ready   → HTTP/2 200
+           {"status":"ready","redis":true}
+
+/ask không có API key → HTTP/2 401
+                         {"detail":"invalid or missing API key"}
 ```
 
 ## Ảnh Chụp Màn Hình

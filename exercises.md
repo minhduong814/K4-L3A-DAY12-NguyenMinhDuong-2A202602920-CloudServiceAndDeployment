@@ -49,15 +49,15 @@ docker images | grep agent
 
 | Bản | Dung lượng |
 |-----|-----------|
-| 1 stage (bản đầu) | ... MB |
-| Multi-stage | ... MB |
+| 1 stage (bản đầu) | Chưa đo |
+| Multi-stage | 271 MB |
 
 Giải thích: phần dung lượng chênh lệch đó là những gì?
 
-Mình chưa đo được hai image thật trong workspace vì Docker daemon không chạy,
-nên không tự điền số MB. Bản multi-stage được thiết kế nhỏ hơn vì image runtime
-chỉ chứa Python slim, dependency đã cài và source; compiler cùng các file build
-chỉ tồn tại trong stage builder và không được đưa sang runtime.
+Mình build được image multi-stage thực tế với Docker daemon đang chạy: khoảng
+271 MB. Bản one-stage chưa được giữ lại để đo đối chiếu. Multi-stage giúp image
+runtime chỉ chứa Python slim, dependency đã cài và source; compiler cùng các
+file build chỉ tồn tại trong stage builder và không được đưa sang runtime.
 
 ---
 
@@ -145,9 +145,9 @@ Ghi lại **một** lỗi bạn gặp khi deploy lên cloud (build fail, health 
 timeout, sai REDIS_URL, app không đọc `$PORT`...): thông báo lỗi là gì, bạn
 tìm ra nguyên nhân bằng cách nào, và sửa ra sao?
 
-Khi kiểm tra public URL từ workspace, `curl` báo `Could not resolve host` cho
-hostname Railway. Điều này cho thấy tên miền chưa phân giải được từ mạng kiểm
-tra hiện tại (hoặc URL cần xác nhận lại trong Railway Dashboard), nên chưa thể
-kết luận lỗi nằm ở FastAPI. Cách xử lý là kiểm tra lại domain public trong
-Railway, thử `curl` từ mạng khác, rồi chỉ ghi output `/health` và `/ready` sau
-khi DNS hoạt động.
+Lần chạy GitHub Actions đầu tiên cho thấy job `Test` và `Build Docker image`
+đều thành công nhưng job `Deploy to Railway` thất bại; smoke test vì vậy bị
+skip. Workflow dùng `secrets.RAILWAY_TOKEN`, nên nguyên nhân cần kiểm tra đầu
+tiên là secret này chưa được tạo hoặc token không có quyền đúng project. Cách
+xử lý là tạo lại Railway token, thêm vào GitHub với đúng tên `RAILWAY_TOKEN`,
+kiểm tra `PUBLIC_URL`, rồi rerun workflow. Secret không được ghi vào repo.
